@@ -305,3 +305,41 @@ select:disabled {
 .reading-list-item .remove-button:hover {
   background-color: #D32F2F;
 }
+/* src/App.css (Tambahkan di bagian bawah) */
+
+/* --- 10. Style Detail Card --- */
+.detail-card-container h2 {
+  margin-top: 0;
+  color: var(--color-secondary); /* Warna ungu aksen */
+}
+
+.detail-card-container .detail-description {
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.detail-card-container .detail-subjects-title {
+  color: var(--color-secondary);
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+.detail-card-container .detail-subjects-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex; /* Kriteria CSS: Flexbox */
+  flex-wrap: wrap; /* Izinkan wrap jika banyak subjek */
+  gap: 8px; /* Jarak antar subjek */
+}
+
+.detail-card-container .detail-subjects-list li {
+  background-color: var(--color-primary);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  flex-shrink: 0; /* Jangan menyusut */
+}

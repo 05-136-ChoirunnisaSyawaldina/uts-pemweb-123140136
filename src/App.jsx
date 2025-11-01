@@ -1,35 +1,70 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// src/App.jsx
+import React, { useState, useEffect } from 'react';
+import Header from './components/Header';
+import SearchForm from './components/SearchForm';
+import DataTable from './components/DataTable';
+import DetailCard from './components/DetailCard';
+import ReadingList from './components/ReadingList';
+import './App.css'; // File CSS utama kita
 
 function App() {
-  const [count, setCount] = useState(0)
+  // Kita akan menambahkan state di langkah berikutnya
+  const [searchResults, setSearchResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [readingList, setReadingList] = useState([]);
+  const [selectedBookKey, setSelectedBookKey] = useState(null);
+
+  // --- TEMPAT FUNGSI handleSearch, handleAddToList, handleRemoveFromList, dll. ---
+  // Ini akan kita isi di langkah-langkah selanjutnya.
+  // Untuk sementara, kita buat dummy function agar tidak error
+  const handleSearch = (query, type) => { console.log("Search:", query, type); };
+  const handleAddToList = (book) => { console.log("Add:", book); };
+  const handleRemoveFromList = (key) => { console.log("Remove:", key); };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="app-container">
+      <Header />
+
+      <main className="content-sections">
+        {/* Section Search Form */}
+        <section className="card search-section">
+          <SearchForm onSearch={handleSearch} />
+        </section>
+
+        {/* Section Data Table */}
+        <section className="card data-table-section">
+          {loading && <p>Mencari buku...</p>}
+          {error && <p className="error-message">{error}</p>}
+          {!loading && !error && searchResults.length === 0 && (
+            <p className="info-message">Mulai cari buku favorit Anda!</p>
+          )}
+          {!loading && !error && searchResults.length > 0 && (
+            <DataTable 
+              books={searchResults} 
+              onAdd={handleAddToList}
+              onSelectDetail={setSelectedBookKey}
+            />
+          )}
+        </section>
+
+        {/* Section Detail Card */}
+        <section className="card detail-section">
+          <DetailCard bookKey={selectedBookKey} />
+        </section>
+
+        {/* Section Reading List */}
+        <section className="card reading-list-section">
+          <ReadingList 
+            list={readingList} 
+            onRemove={handleRemoveFromList}
+          />
+        </section>
+      </main>
+
+      {/* Kita bisa tambahkan Footer di sini jika diperlukan */}
+    </div>
+  );
 }
 
-export default App
+export default App;

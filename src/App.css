@@ -1,0 +1,126 @@
+/* src/App.css */
+
+/* --- 1. Definisi Variabel Warna & Font Global --- */
+:root {
+  /* Palet Warna Anda */
+  --color-bg-cream: #FFFBF7;    /* Cream untuk background utama */
+  --color-card-pink: #FCEFF9;  /* Pink soft untuk kartu */
+  --color-card-purple: #F3EFFF; /* Ungu soft untuk kartu */
+  --color-text: #4E342E;        /* Coklat tua untuk teks agar mudah dibaca */
+  --color-primary: #D14D72;      /* Aksen pink lebih kuat untuk tombol/header */
+  --color-secondary: #9F70FD;    /* Aksen ungu lebih kuat */
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Bayangan lembut untuk kartu */
+}
+
+/* --- 2. Style Dasar (Body & App Container) --- */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--color-bg-cream); /* Latar belakang Cream */
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+.app-container {
+  max-width: 900px; /* Lebar maksimum konten */
+  margin: 0 auto;   /* Posisikan di tengah */
+  padding: 20px;
+}
+
+/* --- 3. Style Header (Kriteria CSS Selector) --- */
+.app-header {
+  background-color: var(--color-primary);
+  color: white;
+  padding: 20px 30px;
+  border-radius: 12px;
+  text-align: center;
+  margin-bottom: 30px;
+  box-shadow: var(--shadow);
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  /* (Saran) Font estetik, bisa diimpor dari Google Fonts nanti */
+  /* font-family: 'Pacifico', cursive; */
+}
+
+.app-header p {
+  margin: 0;
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+/* --- 4. Style "Kartu" Vertikal (Kriteria CSS) --- */
+.content-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 30px; /* Jarak antar kartu */
+}
+
+.card {
+  border-radius: 12px;
+  padding: 25px 30px;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Kombinasi selector & Terapkan Warna */
+.card.search-section {
+  background-color: var(--color-card-purple); /* Kartu Search = Ungu */
+}
+
+.card.data-table-section {
+  background-color: var(--color-card-pink); /* Kartu Tabel = Pink */
+}
+
+.card.detail-section {
+  background-color: var(--color-card-purple); /* Kartu Detail = Ungu */
+}
+
+.card.reading-list-section {
+  background-color: var(--color-card-pink); /* Kartu Reading List = Pink */
+}
+
+/* --- 5. Style Dasar untuk Form & Tombol (Kriteria CSS) --- */
+input[type="text"],
+select {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-sizing: border-box; /* Pastikan padding tidak merusak layout */
+}
+
+button {
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* Pseudo-class (Kriteria CSS) */
+button:hover {
+  background-color: #B33A5E; /* Versi lebih gelap dari --color-primary */
+}
+
+/* --- 6. Media Query (Kriteria CSS Responsive) --- */
+@media (max-width: 768px) {
+  .app-container {
+    padding: 10px;
+  }
+
+  .card {
+    padding: 20px;
+  }
+
+  .app-header h1 {
+    font-size: 2rem;
+  }
+}

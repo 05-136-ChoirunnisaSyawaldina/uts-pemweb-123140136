@@ -249,3 +249,59 @@ select:disabled {
     margin-bottom: 5px;
   }
 }
+/* src/App.css (Tambahkan di bagian bawah) */
+
+/* --- 9. Style Reading List --- */
+.reading-list-container h2 {
+  margin-top: 0;
+  color: var(--color-primary); /* Warna pink aksen */
+}
+
+.reading-list-items-wrapper {
+  overflow-x: auto; /* Agar bisa scroll horizontal di HP */
+  padding-bottom: 10px; /* Ruang untuk scrollbar */
+}
+
+.reading-list-container ul {
+  list-style: none; /* Hilangkan bullet point default */
+  padding: 0;
+  margin: 0;
+  display: flex; /* Kriteria CSS: Flexbox untuk list item */
+  flex-wrap: nowrap; /* Jangan wrap, biar horizontal */
+  gap: 10px; /* Jarak antar item */
+}
+
+.reading-list-item {
+  background-color: white;
+  border: 1px solid #E0E0E0;
+  border-radius: 8px;
+  padding: 10px 15px;
+  display: flex; /* Flexbox untuk konten dalam list item */
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  white-space: nowrap; /* Pastikan teks tidak pecah */
+  flex-shrink: 0; /* Jangan menyusut */
+}
+
+.reading-list-item .book-title {
+  font-weight: bold;
+}
+
+.reading-list-item .remove-button {
+  background-color: #E57373; /* Merah untuk hapus */
+  padding: 5px 9px;
+  border-radius: 50%; /* Tombol bulat */
+  font-size: 1rem;
+  line-height: 1; /* Paskan ikon x */
+  width: 28px; /* Ukuran tetap */
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0; /* Jangan menyusut */
+}
+
+.reading-list-item .remove-button:hover {
+  background-color: #D32F2F;
+}

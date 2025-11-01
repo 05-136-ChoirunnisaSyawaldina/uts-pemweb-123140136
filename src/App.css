@@ -174,3 +174,78 @@ select:disabled {
   color: #555;
   font-style: italic;
 }
+/* src/App.css (Tambahkan di bagian bawah, jika belum ada) */
+
+/* --- 8. Style Tabel Hasil Pencarian --- */
+.data-table-container h2 {
+  margin-top: 0;
+  color: var(--color-primary); /* Warna pink aksen */
+}
+
+/* Untuk membuat tabel bisa di-scroll horizontal */
+.table-wrapper {
+  overflow-x: auto; /* Kriteria CSS: Responsive Design */
+  width: 100%;
+}
+
+.data-table-container table {
+  width: 100%;
+  border-collapse: collapse; /* Hilangkan garis ganda */
+  min-width: 600px; /* Pastikan tabel tidak terlalu kecil di HP */
+}
+
+.data-table-container th,
+.data-table-container td {
+  border: 1px solid #E0E0E0;
+  padding: 12px 15px;
+  text-align: left;
+}
+
+.data-table-container th {
+  background-color: var(--color-primary);
+  color: white;
+  font-weight: bold;
+  position: sticky; /* Agar header tabel tetap terlihat saat scroll horizontal */
+  top: 0;
+}
+
+.data-table-container tr:nth-child(even) { /* Pseudo-class: Even rows */
+  background-color: #f9f9f9; /* Selang-seling warna baris */
+}
+
+.data-table-container td button {
+  padding: 8px 12px;
+  margin-right: 5px;
+  font-size: 0.85rem;
+  white-space: nowrap; /* Pastikan tombol tidak pecah */
+}
+
+.data-table-container .book-cover-thumb {
+  width: 50px; /* Ukuran thumbnail cover */
+  height: auto;
+  display: block;
+  border-radius: 4px;
+  object-fit: cover; /* Pastikan gambar tidak terdistorsi */
+}
+
+.data-table-container .no-cover-thumb {
+  width: 50px;
+  height: 75px; /* Proporsi standar buku */
+  background-color: #E0E0E0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  text-align: center;
+  color: #757575;
+  border-radius: 4px;
+}
+
+/* Responsive untuk tombol di tabel */
+@media (max-width: 480px) {
+  .data-table-container td button {
+    display: block;
+    width: 100%;
+    margin-bottom: 5px;
+  }
+}

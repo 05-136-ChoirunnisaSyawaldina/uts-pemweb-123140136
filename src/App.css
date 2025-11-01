@@ -124,3 +124,53 @@ button:hover {
     font-size: 2rem;
   }
 }
+/* src/App.css (Tambahkan di bagian bawah) */
+
+/* --- 7. Style Form & Pesan Info --- */
+.search-form-container h2 {
+  margin-top: 0;
+  color: var(--color-secondary); /* Warna ungu aksen */
+}
+
+.search-form-container label {
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.form-buttons {
+  display: flex; /* Kriteria CSS: Flexbox */
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* Style untuk tombol reset (Kombinasi selector) */
+button[type="reset"] {
+  background-color: #9E9E9E; /* Abu-abu netral */
+}
+
+button[type="reset"]:hover {
+  background-color: #757575;
+}
+
+/* Style untuk tombol/input yang dimatikan */
+button:disabled,
+input:disabled,
+select:disabled {
+  background-color: #BDBDBD;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Style untuk pesan error dan info */
+.error-message {
+  color: #D32F2F;
+  font-weight: bold;
+}
+
+.info-message {
+  color: #555;
+  font-style: italic;
+}

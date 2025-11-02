@@ -1,198 +1,138 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'; 
+import './App.css';
 
-// Impor semua komponen
 import Header from './components/Header';
 import SearchForm from './components/SearchForm';
 import DataTable from './components/DataTable';
 import DetailCard from './components/DetailCard';
-import ReadingList from './components/ReadingList';
-import './App.css'; 
 
+// Komponen Fungsional
 function App() {
-  // State untuk menyimpan data aplikasi
-  const [searchResults, setSearchResults] = useState([]);
-  const [loading, setLoading] = useState(false);
+  // useState
+  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [readingList, setReadingList] = useState([]); 
-  const [selectedBookKey, setSelectedBookKey] = useState(null); 
-  const [subjectFilter, setSubjectFilter] = useState(''); // <-- STATE BARU UNTUK FILTER SUBJEK
+  
+  const [searchParams, setSearchParams] = useState({
+    query: 'react programming',
+    subject: '',
+    publishYear: '',
+    hasCover: false,
+    sortBy: 'relevance'
+  });
+  
+  const [selectedBookKey, setSelectedBookKey] = useState(null);
 
-  // --- useEffect 1: Memuat data dari localStorage saat komponen pertama kali di-mount ---
+  // useEffect
   useEffect(() => {
+    // Async Await
+    const fetchBooks = async () => {
+      setLoading(true);
+      setError(null);
+      setBooks([]);
+      
+      try {
+        // Template Literals
+        let url = `https://openlibrary.org/search.json?q=${encodeURIComponent(searchParams.query)}`;
+        
+        if (searchParams.subject) {
+          url += `&subject=${encodeURIComponent(searchParams.subject)}`;
+        }
+        if (searchParams.publishYear) {
+          url += `&first_publish_year=${encodeURIComponent(searchParams.publishYear)}`;
+        }
+        if (searchParams.sortBy === 'new') {
+          url += `&sort=new`;
+        }
+        
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error('Gagal mengambil data dari Open Library API.');
+        }
+        const data = await response.json();
+        
+        // Data Transformation
+        // Array Methods (.map, .filter)
+        let formattedBooks = data.docs.map(doc => ({
+          key: doc.key,
+          title: doc.title,
+          author: doc.author_name ? doc.author_name.join(', ') : 'N/A',
+          year: doc.first_publish_year,
+          coverId: doc.cover_i,
+        }));
+
+        if (searchParams.hasCover) {
+          formattedBooks = formattedBooks.filter(book => book.coverId);
+        }
+        
+        setBooks(formattedBooks);
+
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchBooks();
+    
+  }, [searchParams]); // Dependency array
+
+  // Event Handling
+  const handleSearch = (newParams) => {
+    setSearchParams(newParams);
+  };
+
+  const handleBookClick = (bookKey) => {
+    setSelectedBookKey(bookKey);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedBookKey(null);
+  };
+
+  // Logika localStorage
+  const handleAddToList = (book) => {
     try {
-      const savedList = localStorage.getItem('myReadingList');
-      if (savedList) {
-        setReadingList(JSON.parse(savedList));
+      const list = JSON.parse(localStorage.getItem('readingList') || '[]');
+      // Array Methods (.find)
+      if (!list.find(item => item.key === book.key)) {
+        list.push(book);
+        localStorage.setItem('readingList', JSON.stringify(list));
+        alert(`${book.title} berhasil ditambahkan ke Reading List!`);
+      } else {
+        alert(`${book.title} sudah ada di Reading List.`);
       }
     } catch (e) {
-      console.error("Failed to load reading list from localStorage", e);
-      setReadingList([]); 
-    }
-  }, []); 
-
-  // --- useEffect 2: Menyimpan data ke localStorage setiap kali 'readingList' berubah ---
-  useEffect(() => {
-    if (readingList.length > 0) { 
-      localStorage.setItem('myReadingList', JSON.stringify(readingList));
-    } else {
-      localStorage.removeItem('myReadingList');
-    }
-  }, [readingList]); 
-
-  // --- Fungsi untuk pencarian buku dari Open Library API ---
-  // --- Fungsi untuk pencarian buku dari Open Library API ---
-  const handleSearch = async (query, type) => {
-    setLoading(true);
-    setError(null);
-    setSearchResults([]); 
-    setSubjectFilter(''); 
-
-    // Daftar fields yang kita inginkan dari API
-    const fields = "key,title,author_name,first_publish_year,cover_i,subject,subject_facet,language";
-
-    let searchUrl = `https://openlibrary.org/search.json?`;
-    const encodedQuery = encodeURIComponent(query);
-
-    if (type === 'title') {
-      searchUrl += `q=${encodedQuery}`;
-    } else {
-      searchUrl += `author=${encodedQuery}`;
-    }
-    
-    // --- PERUBAHAN DI SINI ---
-    // Hapus baris lama: searchUrl += `&limit=20`; 
-    // Ganti dengan baris ini:
-    searchUrl += `&fields=${fields}&limit=20`;
-    // -------------------------
-
-    try {
-      const response = await axios.get(searchUrl);
-      
-      const books = response.data.docs.map(doc => {
-        // Sekarang 'doc' PASTI akan berisi 'subject_facet' jika ada
-        const { key, title, author_name, first_publish_year, cover_i, subject, subject_facet, language } = doc;
-        
-        return {
-          key: key,
-          title: title,
-          author: author_name ? author_name[0] : 'N/A', 
-          year: first_publish_year,
-          cover_id: cover_i,
-          // Pastikan Anda juga menggunakan 'subject_facet' di sini
-          subjects: subject_facet || subject || [], 
-          language: language ? language[0] : 'N/A'
-        };
-      });
-      
-      setSearchResults(books);
-
-    } catch (err) {
-      console.error("API Fetch Error:", err);
-      setError('Gagal mengambil data dari Open Library. Coba lagi nanti.');
-    } finally {
-      setLoading(false);
+      console.error("Gagal menyimpan ke localStorage", e);
+      alert("Gagal menyimpan ke Reading List.");
     }
   };
-
-  // --- Fungsi untuk menambah buku ke reading list ---
-  const handleAddToList = (bookToAdd) => {
-    if (!readingList.some(book => book.key === bookToAdd.key)) {
-      setReadingList(prevList => [...prevList, bookToAdd]);
-      alert(`${bookToAdd.title} ditambahkan ke Reading List!`);
-    } else {
-      alert(`${bookToAdd.title} sudah ada di Reading List.`);
-    }
-  };
-
-  // --- Fungsi untuk menghapus buku dari reading list ---
-  const handleRemoveFromList = (bookKeyToRemove) => {
-    setReadingList(prevList => prevList.filter(book => book.key !== bookKeyToRemove));
-    alert(`Buku dihapus dari Reading List.`);
-  };
-
-  // --- LOGIKA FILTER: Dapatkan daftar semua subjek unik dari searchResults ---
-  const allSubjects = new Set();
-  searchResults.forEach(book => {
-    if (book.subjects && Array.isArray(book.subjects)) { 
-      book.subjects.forEach(sub => {
-        if (sub && typeof sub === 'string') { 
-          allSubjects.add(sub);
-        }
-      });
-    }
-  });
-  const uniqueSubjects = [...allSubjects].sort(); 
-  console.log("Search Results:", searchResults);
-  console.log("Unique Subjects:", uniqueSubjects);
-
-  // --- LOGIKA FILTER: Filter searchResults berdasarkan subjectFilter ---
-  const filteredResults = searchResults.filter(book => {
-    if (!subjectFilter) {
-      return true; // Jika tidak ada filter yang dipilih, tampilkan semua
-    }
-    return book.subjects && book.subjects.includes(subjectFilter);
-  });
 
   return (
-    <div className="app-container">
-      <Header />
+    <div className="container">
+      {/* Props Passing */}
+      <Header title="My Pastel Book Library" />
       
-      <main className="content-sections">
-        {/* Section Search Form */}
-        <section className="card search-section">
-          <SearchForm onSearch={handleSearch} isLoading={loading} />
-        </section>
+      <SearchForm 
+        onSearch={handleSearch} 
+      />
+      
+      <DataTable
+        books={books}
+        loading={loading}
+        error={error}
+        onBookClick={handleBookClick}
+        onAddToList={handleAddToList}
+      />
 
-        {/* Section Data Table (dengan Filter) */}
-        <section className="card data-table-section">
-          {loading && <p>Mencari buku...</p>}
-          {error && <p className="error-message">{error}</p>}
-          
-          {!loading && !error && searchResults.length === 0 && (
-            <p className="info-message">Mulai cari buku favorit Anda!</p>
-          )}
-          
-          {!loading && !error && searchResults.length > 0 && (
-            <> {/* Fragment untuk menampung elemen filter dan DataTable */}
-              {/* --- DROPDOWN FILTER SUBJEK --- */}
-              <div className="subject-filter-container">
-                <label htmlFor="subject-filter">Filter Berdasarkan Subjek:</label>
-                <select 
-                  id="subject-filter"
-                  value={subjectFilter}
-                  onChange={(e) => setSubjectFilter(e.target.value)}
-                >
-                  <option value="">Semua Subjek</option> 
-                  {uniqueSubjects.map(subject => (
-                    <option key={subject} value={subject}>{subject}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* DataTable sekarang menerima data yang sudah difilter */}
-              <DataTable 
-                books={filteredResults} // Menggunakan data yang sudah difilter
-                onAdd={handleAddToList}
-                onSelectDetail={setSelectedBookKey}
-              />
-            </>
-          )}
-        </section>
-
-        {/* Section Detail Card */}
-        <section className="card detail-section">
-          <DetailCard bookKey={selectedBookKey} />
-        </section>
-
-        {/* Section Reading List */}
-        <section className="card reading-list-section">
-          <ReadingList 
-            list={readingList}
-            onRemove={handleRemoveFromList}
-          />
-        </section>
-      </main>
+      {/* Conditional Rendering */}
+      {selectedBookKey && (
+        <DetailCard 
+          bookKey={selectedBookKey} 
+          onClose={handleCloseModal} 
+        />
+      )}
     </div>
   );
 }

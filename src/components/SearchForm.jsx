@@ -1,7 +1,6 @@
 // src/components/SearchForm.jsx
 import React, { useState } from 'react'; // Impor useState
 
-// (Kriteria: React - Functional components, Props passing)
 function SearchForm({ onSearch, isLoading }) {
   // (Kriteria: React - useState)
   const [query, setQuery] = useState('');

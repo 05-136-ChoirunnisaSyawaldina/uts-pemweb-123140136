@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'; // Pastikan axios sudah diimpor
+import axios from 'axios'; 
 
 // Impor semua komponen
 import Header from './components/Header';
@@ -7,15 +7,16 @@ import SearchForm from './components/SearchForm';
 import DataTable from './components/DataTable';
 import DetailCard from './components/DetailCard';
 import ReadingList from './components/ReadingList';
-import './App.css'; // Impor CSS utama
+import './App.css'; 
 
 function App() {
   // State untuk menyimpan data aplikasi
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [readingList, setReadingList] = useState([]); // State untuk daftar baca
-  const [selectedBookKey, setSelectedBookKey] = useState(null); // State untuk detail buku
+  const [readingList, setReadingList] = useState([]); 
+  const [selectedBookKey, setSelectedBookKey] = useState(null); 
+  const [subjectFilter, setSubjectFilter] = useState(''); // <-- STATE BARU UNTUK FILTER SUBJEK
 
   // --- useEffect 1: Memuat data dari localStorage saat komponen pertama kali di-mount ---
   useEffect(() => {
@@ -26,25 +27,29 @@ function App() {
       }
     } catch (e) {
       console.error("Failed to load reading list from localStorage", e);
-      setReadingList([]); // Jika ada error (misal: data corrupt), mulai dengan array kosong
+      setReadingList([]); 
     }
-  }, []); // Array kosong berarti hanya dijalankan sekali saat mount
+  }, []); 
 
   // --- useEffect 2: Menyimpan data ke localStorage setiap kali 'readingList' berubah ---
   useEffect(() => {
-    if (readingList.length > 0) { // Hanya simpan jika ada isinya
+    if (readingList.length > 0) { 
       localStorage.setItem('myReadingList', JSON.stringify(readingList));
     } else {
-      // Jika readingList kosong, hapus item dari localStorage juga
       localStorage.removeItem('myReadingList');
     }
-  }, [readingList]); // Dependensi pada readingList: dijalankan setiap kali readingList berubah
+  }, [readingList]); 
 
+  // --- Fungsi untuk pencarian buku dari Open Library API ---
   // --- Fungsi untuk pencarian buku dari Open Library API ---
   const handleSearch = async (query, type) => {
     setLoading(true);
     setError(null);
-    setSearchResults([]); // Kosongkan hasil lama
+    setSearchResults([]); 
+    setSubjectFilter(''); 
+
+    // Daftar fields yang kita inginkan dari API
+    const fields = "key,title,author_name,first_publish_year,cover_i,subject,subject_facet,language";
 
     let searchUrl = `https://openlibrary.org/search.json?`;
     const encodedQuery = encodeURIComponent(query);
@@ -54,21 +59,29 @@ function App() {
     } else {
       searchUrl += `author=${encodedQuery}`;
     }
-    searchUrl += `&limit=20`; // Batasi hasil agar tidak terlalu banyak
+    
+    // --- PERUBAHAN DI SINI ---
+    // Hapus baris lama: searchUrl += `&limit=20`; 
+    // Ganti dengan baris ini:
+    searchUrl += `&fields=${fields}&limit=20`;
+    // -------------------------
 
     try {
       const response = await axios.get(searchUrl);
       
       const books = response.data.docs.map(doc => {
-        const { key, title, author_name, first_publish_year, cover_i, subject } = doc;
+        // Sekarang 'doc' PASTI akan berisi 'subject_facet' jika ada
+        const { key, title, author_name, first_publish_year, cover_i, subject, subject_facet, language } = doc;
         
         return {
           key: key,
           title: title,
-          author: author_name ? author_name[0] : 'N/A', // Ambil penulis pertama
+          author: author_name ? author_name[0] : 'N/A', 
           year: first_publish_year,
           cover_id: cover_i,
-          subjects: subject || [] // Pastikan subjects adalah array (penting untuk filter nanti)
+          // Pastikan Anda juga menggunakan 'subject_facet' di sini
+          subjects: subject_facet || subject || [], 
+          language: language ? language[0] : 'N/A'
         };
       });
       
@@ -98,6 +111,29 @@ function App() {
     alert(`Buku dihapus dari Reading List.`);
   };
 
+  // --- LOGIKA FILTER: Dapatkan daftar semua subjek unik dari searchResults ---
+  const allSubjects = new Set();
+  searchResults.forEach(book => {
+    if (book.subjects && Array.isArray(book.subjects)) { 
+      book.subjects.forEach(sub => {
+        if (sub && typeof sub === 'string') { 
+          allSubjects.add(sub);
+        }
+      });
+    }
+  });
+  const uniqueSubjects = [...allSubjects].sort(); 
+  console.log("Search Results:", searchResults);
+  console.log("Unique Subjects:", uniqueSubjects);
+
+  // --- LOGIKA FILTER: Filter searchResults berdasarkan subjectFilter ---
+  const filteredResults = searchResults.filter(book => {
+    if (!subjectFilter) {
+      return true; // Jika tidak ada filter yang dipilih, tampilkan semua
+    }
+    return book.subjects && book.subjects.includes(subjectFilter);
+  });
+
   return (
     <div className="app-container">
       <Header />
@@ -108,7 +144,7 @@ function App() {
           <SearchForm onSearch={handleSearch} isLoading={loading} />
         </section>
 
-        {/* Section Data Table */}
+        {/* Section Data Table (dengan Filter) */}
         <section className="card data-table-section">
           {loading && <p>Mencari buku...</p>}
           {error && <p className="error-message">{error}</p>}
@@ -118,24 +154,42 @@ function App() {
           )}
           
           {!loading && !error && searchResults.length > 0 && (
-            <DataTable 
-              books={searchResults} 
-              onAdd={handleAddToList} // Meneruskan fungsi penambah ke DataTable
-              onSelectDetail={setSelectedBookKey} // Meneruskan fungsi set selected book
-            />
+            <> {/* Fragment untuk menampung elemen filter dan DataTable */}
+              {/* --- DROPDOWN FILTER SUBJEK --- */}
+              <div className="subject-filter-container">
+                <label htmlFor="subject-filter">Filter Berdasarkan Subjek:</label>
+                <select 
+                  id="subject-filter"
+                  value={subjectFilter}
+                  onChange={(e) => setSubjectFilter(e.target.value)}
+                >
+                  <option value="">Semua Subjek</option> 
+                  {uniqueSubjects.map(subject => (
+                    <option key={subject} value={subject}>{subject}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* DataTable sekarang menerima data yang sudah difilter */}
+              <DataTable 
+                books={filteredResults} // Menggunakan data yang sudah difilter
+                onAdd={handleAddToList}
+                onSelectDetail={setSelectedBookKey}
+              />
+            </>
           )}
         </section>
 
         {/* Section Detail Card */}
         <section className="card detail-section">
-          <DetailCard bookKey={selectedBookKey} /> {/* Meneruskan key buku terpilih */}
+          <DetailCard bookKey={selectedBookKey} />
         </section>
 
         {/* Section Reading List */}
         <section className="card reading-list-section">
           <ReadingList 
-            list={readingList} // Meneruskan daftar baca
-            onRemove={handleRemoveFromList} // Meneruskan fungsi penghapus
+            list={readingList}
+            onRemove={handleRemoveFromList}
           />
         </section>
       </main>

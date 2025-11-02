@@ -25,7 +25,7 @@ Screenshot aplikasi yang menunjukkan fungsionalitas dan desain responsif.
 
 <br><img width="1351" height="1007" alt="image" src="https://github.com/user-attachments/assets/92097e1e-f10f-4955-822f-01ff9dce3c01" />
 
-### Tampilan Modal Detail Buku
+### Tampilan Detail Buku
 <br><img width="1886" height="1063" alt="Screenshot 2025-11-02 120705" src="https://github.com/user-attachments/assets/365db780-fbf8-4586-b1b6-d7a0852cd540" />
 
 ### Tampilan Sidebar Reading List

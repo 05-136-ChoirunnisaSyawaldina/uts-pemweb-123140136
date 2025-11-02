@@ -1,110 +1,76 @@
-// src/components/DetailCard.jsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'; // Impor axios
 
-// (Kriteria: React - Functional components, Props passing)
-function DetailCard({ bookKey }) {
+const DetailCard = ({ bookKey, onClose }) => {
   const [details, setDetails] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // (Kriteria: React - useEffect, Modern JS - async/await, API Integration)
-  // useEffect ini akan dijalankan SETIAP KALI 'bookKey' (prop) berubah
+  // useEffect untuk fetch detail buku
   useEffect(() => {
-    // Jika tidak ada bookKey yang diberikan (misal: saat aplikasi pertama kali dimuat), reset detail
-    if (!bookKey) {
-      setDetails(null);
-      setError(null);
-      return; // Hentikan eksekusi further
-    }
+    if (!bookKey) return;
 
-    const fetchDetails = async () => {
-      setLoading(true);
-      setError(null);
-      setDetails(null); // Reset detail sebelumnya
-
+    setLoading(true);
+    // Async Await
+    const fetchBookDetails = async () => {
       try {
-        // Panggil API detail buku menggunakan bookKey
-        // bookKey akan seperti "/works/OL45883W"
-        const response = await axios.get(`https://openlibrary.org${bookKey}.json`);
+        // Template Literals
+        const response = await fetch(`https://openlibrary.org${bookKey}.json`);
+        if (!response.ok) {
+          throw new Error('Gagal mengambil detail buku.');
+        }
+        const data = await response.json();
         
-        // (Kriteria: Modern JS - Destructuring)
-        const { description, subjects } = response.data;
-        
-        // Deskripsi dari API bisa berupa objek { type: '...', value: '...' } atau string
-        const descText = typeof description === 'object' && description !== null 
-                         ? description.value 
-                         : description;
-        
+        let description = "Tidak ada deskripsi.";
+        if (typeof data.description === 'string') {
+          description = data.description;
+        } else if (data.description && typeof data.description.value === 'string') {
+          description = data.description.value;
+        }
+
         setDetails({
-          description: descText || 'Tidak ada deskripsi yang tersedia.',
-          subjects: subjects && subjects.length > 0 ? subjects.slice(0, 5) : ['Tidak ada subjek.'] // Batasi subjek 5 saja
+          title: data.title,
+          coverId: data.covers ? data.covers[0] : null,
+          subjects: data.subjects ? data.subjects.slice(0, 5).join(', ') : 'N/A',
+          description: description
         });
-        
+
       } catch (err) {
-        console.error("Failed to fetch book details:", err);
-        setError('Gagal memuat detail buku. Coba lagi.');
-        setDetails(null);
+        console.error(err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchDetails(); // Panggil fungsi fetchDetails
-  }, [bookKey]); // <-- Dependency array: effect akan jalan jika bookKey berubah
+    fetchBookDetails();
+  }, [bookKey]); // Dependency array
 
-  // (Kriteria: React - Conditional rendering)
-  // src/components/DetailCard.jsx
+  const coverUrl = details?.coverId
+    ? `https://covers.openlibrary.org/b/id/${details.coverId}-L.jpg`
+    : 'https://via.placeholder.com/200x300.png?text=No+Cover';
 
-// ... (semua kode di atas ini tetap sama) ...
-
-  // (Kriteria: React - Conditional rendering)
-  if (loading) {
-    return (
-      <div className="detail-card-container">
-        <h2>Detail Buku</h2>
-        <p>Memuat detail buku...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="detail-card-container">
-        <h2>Detail Buku</h2>
-        <p className="error-message">{error}</p>
-      </div>
-    );
-  }
-  
-  if (!details) {
-     return (
-       <div className="detail-card-container">
-         <h2>Detail Buku</h2>
-         <p className="info-message">Klik "Detail" pada buku di hasil pencarian untuk melihat informasi lengkap.</p>
-       </div>
-     );
-  }
-
-  // Jika details sudah ada, tampilkan
   return (
-    <div className="detail-card-container">
-      <h2>Detail Buku</h2>
-      <p className="detail-description">{details.description}</p>
-      
-      {/* KOREKSI: Pastikan kondisi ini dibungkus dengan Fragment atau div jika ada lebih dari 1 elemen */}
-      {details.subjects.length > 0 && ( // Ini adalah conditional rendering
-        <> {/* Fragment untuk membungkus multiple elements secara kondisional */}
-          <h4 className="detail-subjects-title">Subjek:</h4>
-          <ul className="detail-subjects-list">
-            {details.subjects.map((subject, index) => (
-              <li key={index}>{subject}</li> // Menggunakan index sebagai key, aman karena list ini statis
-            ))}
-          </ul>
-        </>
-      )}
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <button className="modal-close-btn" onClick={onClose}>&times;</button>
+        
+        {loading && <div className="loading-message">Memuat detail...</div>}
+
+        {!loading && details && (
+          <div className="modal-body">
+            <img src={coverUrl} alt={`Cover ${details.title}`} className="modal-cover" />
+            <div className="modal-details">
+              <h2>{details.title}</h2>
+              <p><strong>Subjek:</strong> {details.subjects}</p>
+              
+              <div className="modal-description">
+                <strong>Deskripsi:</strong>
+                <p>{details.description.substring(0, 500)}{details.description.length > 500 ? '...' : ''}</p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
-}
+};
 
 export default DetailCard;

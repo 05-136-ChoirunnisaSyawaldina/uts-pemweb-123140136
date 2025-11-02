@@ -1,380 +1,330 @@
-/* src/App.css */
-
-/* --- 1. Definisi Variabel Warna & Font Global --- */
+/* === 1. Global & Setup (Pastel Palette) === */
 :root {
-  /* Palet Warna Anda */
-  --color-bg-cream: #FFFBF7;    /* Cream untuk background utama */
-  --color-card-pink: #FCEFF9;  /* Pink soft untuk kartu */
-  --color-card-purple: #F3EFFF; /* Ungu soft untuk kartu */
-  --color-text: #4E342E;        /* Coklat tua untuk teks agar mudah dibaca */
-  --color-primary: #D14D72;      /* Aksen pink lebih kuat untuk tombol/header */
-  --color-secondary: #9F70FD;    /* Aksen ungu lebih kuat */
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Bayangan lembut untuk kartu */
+  --bg-main: #FDF8F5;
+  --bg-container: #FFFFFF;
+  --text-primary: #4A4A4A;
+  --text-secondary: #9B9B9B;
+  --accent-color: #B2D8D8; /* Mint */
+  --accent-hover: #86B8B8;
+  --button-color: #FADCB9; /* Peach */
+  --button-hover: #F9C89B;
+  --border-color: #EEEEEE;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.08);
+  --border-radius: 12px;
 }
 
-/* --- 2. Style Dasar (Body & App Container) --- */
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  background-color: var(--color-bg-cream); /* Latar belakang Cream */
-  color: var(--color-text);
+  background-color: var(--bg-main);
+  color: var(--text-primary);
   line-height: 1.6;
 }
 
-.app-container {
-  max-width: 900px; /* Lebar maksimum konten */
-  margin: 0 auto;   /* Posisikan di tengah */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 20px;
 }
 
-/* --- 3. Style Header (Kriteria CSS Selector) --- */
+/* === 2. Header (components/Header.jsx) === */
 .app-header {
-  background-color: var(--color-primary);
-  color: white;
-  padding: 20px 30px;
-  border-radius: 12px;
   text-align: center;
   margin-bottom: 30px;
-  box-shadow: var(--shadow);
+  padding: 20px 30px;
+  background-color: var(--bg-container);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+  border-bottom: 4px solid var(--accent-color);
 }
 
 .app-header h1 {
+  color: var(--text-primary);
   margin: 0;
-  font-size: 2.5rem;
-  /* (Saran) Font estetik, bisa diimpor dari Google Fonts nanti */
-  /* font-family: 'Pacifico', cursive; */
+  font-weight: 700;
 }
 
-.app-header p {
-  margin: 0;
-  font-size: 1.1rem;
-  opacity: 0.9;
+/* === 3. Search Form (components/SearchForm.jsx) === */
+.search-container {
+  background-color: var(--bg-container);
+  padding: 25px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 30px;
 }
 
-/* --- 4. Style "Kartu" Vertikal (Kriteria CSS) --- */
-.content-sections {
+.search-form {
   display: flex;
-  flex-direction: column;
-  gap: 30px; /* Jarak antar kartu */
+  gap: 15px;
 }
 
-.card {
-  border-radius: 12px;
-  padding: 25px 30px;
-  box-shadow: var(--shadow);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-/* Kombinasi selector & Terapkan Warna */
-.card.search-section {
-  background-color: var(--color-card-purple); /* Kartu Search = Ungu */
-}
-
-.card.data-table-section {
-  background-color: var(--color-card-pink); /* Kartu Tabel = Pink */
-}
-
-.card.detail-section {
-  background-color: var(--color-card-purple); /* Kartu Detail = Ungu */
-}
-
-.card.reading-list-section {
-  background-color: var(--color-card-pink); /* Kartu Reading List = Pink */
-}
-
-/* --- 5. Style Dasar untuk Form & Tombol (Kriteria CSS) --- */
-input[type="text"],
-select {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 15px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-sizing: border-box; /* Pastikan padding tidak merusak layout */
-}
-
-button {
-  background-color: var(--color-primary);
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 8px;
+.search-form input[type="text"] {
+  flex-grow: 1;
+  padding: 12px 15px;
   font-size: 1rem;
-  font-weight: bold;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Pseudo-class :focus */
+.search-form input[type="text"]:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(178, 216, 216, 0.5);
+}
+
+.search-form button {
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  background-color: var(--button-color);
+  border: none;
+  border-radius: var(--border-radius);
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s;
 }
 
-/* Pseudo-class (Kriteria CSS) */
-button:hover {
-  background-color: #B33A5E; /* Versi lebih gelap dari --color-primary */
+/* Pseudo-class :hover */
+.search-form button:hover {
+  background-color: var(--button-hover);
 }
 
-/* --- 6. Media Query (Kriteria CSS Responsive) --- */
-@media (max-width: 768px) {
-  .app-container {
-    padding: 10px;
-  }
-
-  .card {
-    padding: 20px;
-  }
-
-  .app-header h1 {
-    font-size: 2rem;
-  }
-}
-/* src/App.css (Tambahkan di bagian bawah) */
-
-/* --- 7. Style Form & Pesan Info --- */
-.search-form-container h2 {
-  margin-top: 0;
-  color: var(--color-secondary); /* Warna ungu aksen */
-}
-
-.search-form-container label {
-  display: block;
-  margin-top: 15px;
-  margin-bottom: 5px;
-  font-weight: bold;
-  font-size: 0.9rem;
-}
-
-.form-buttons {
-  display: flex; /* Kriteria CSS: Flexbox */
-  gap: 10px;
+/* === 4. Form Grid (untuk 5 input) === */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
   margin-top: 20px;
 }
 
-/* Style untuk tombol reset (Kombinasi selector) */
-button[type="reset"] {
-  background-color: #9E9E9E; /* Abu-abu netral */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-button[type="reset"]:hover {
-  background-color: #757575;
+.input-group label {
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
-/* Style untuk tombol/input yang dimatikan */
-button:disabled,
-input:disabled,
-select:disabled {
-  background-color: #BDBDBD;
-  opacity: 0.7;
-  cursor: not-allowed;
+.radio-group {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-top: 5px;
 }
 
-/* Style untuk pesan error dan info */
-.error-message {
-  color: #D32F2F;
-  font-weight: bold;
+.radio-group label {
+  font-weight: normal;
+  color: var(--text-secondary);
 }
 
-.info-message {
-  color: #555;
-  font-style: italic;
-}
-/* src/App.css (Tambahkan di bagian bawah, jika belum ada) */
-
-/* --- 8. Style Tabel Hasil Pencarian --- */
-.data-table-container h2 {
-  margin-top: 0;
-  color: var(--color-primary); /* Warna pink aksen */
-}
-
-/* Untuk membuat tabel bisa di-scroll horizontal */
-.table-wrapper {
-  overflow-x: auto; /* Kriteria CSS: Responsive Design */
-  width: 100%;
-}
-
-.data-table-container table {
-  width: 100%;
-  border-collapse: collapse; /* Hilangkan garis ganda */
-  min-width: 600px; /* Pastikan tabel tidak terlalu kecil di HP */
-}
-
-.data-table-container th,
-.data-table-container td {
-  border: 1px solid #E0E0E0;
-  padding: 12px 15px;
-  text-align: left;
-}
-
-.data-table-container th {
-  background-color: var(--color-primary);
-  color: white;
-  font-weight: bold;
-  position: sticky; /* Agar header tabel tetap terlihat saat scroll horizontal */
-  top: 0;
-}
-
-.data-table-container tr:nth-child(even) { /* Pseudo-class: Even rows */
-  background-color: #f9f9f9; /* Selang-seling warna baris */
-}
-
-.data-table-container td button {
-  padding: 8px 12px;
-  margin-right: 5px;
-  font-size: 0.85rem;
-  white-space: nowrap; /* Pastikan tombol tidak pecah */
-}
-
-.data-table-container .book-cover-thumb {
-  width: 50px; /* Ukuran thumbnail cover */
-  height: auto;
-  display: block;
-  border-radius: 4px;
-  object-fit: cover; /* Pastikan gambar tidak terdistorsi */
-}
-
-.data-table-container .no-cover-thumb {
-  width: 50px;
-  height: 75px; /* Proporsi standar buku */
-  background-color: #E0E0E0;
+.checkbox-group {
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 0.7rem;
-  text-align: center;
-  color: #757575;
-  border-radius: 4px;
+  gap: 10px;
+  margin-top: 10px;
 }
 
-/* Responsive untuk tombol di tabel */
-@media (max-width: 480px) {
-  .data-table-container td button {
-    display: block;
-    width: 100%;
-    margin-bottom: 5px;
-  }
-}
-/* src/App.css (Tambahkan di bagian bawah) */
-
-/* --- 9. Style Reading List --- */
-.reading-list-container h2 {
-  margin-top: 0;
-  color: var(--color-primary); /* Warna pink aksen */
-}
-
-.reading-list-items-wrapper {
-  overflow-x: auto; /* Agar bisa scroll horizontal di HP */
-  padding-bottom: 10px; /* Ruang untuk scrollbar */
-}
-
-.reading-list-container ul {
-  list-style: none; /* Hilangkan bullet point default */
-  padding: 0;
-  margin: 0;
-  display: flex; /* Kriteria CSS: Flexbox untuk list item */
-  flex-wrap: nowrap; /* Jangan wrap, biar horizontal */
-  gap: 10px; /* Jarak antar item */
-}
-
-.reading-list-item {
-  background-color: white;
-  border: 1px solid #E0E0E0;
-  border-radius: 8px;
-  padding: 10px 15px;
-  display: flex; /* Flexbox untuk konten dalam list item */
-  align-items: center;
-  gap: 8px;
-  font-size: 0.95rem;
-  white-space: nowrap; /* Pastikan teks tidak pecah */
-  flex-shrink: 0; /* Jangan menyusut */
-}
-
-.reading-list-item .book-title {
-  font-weight: bold;
-}
-
-.reading-list-item .remove-button {
-  background-color: #E57373; /* Merah untuk hapus */
-  padding: 5px 9px;
-  border-radius: 50%; /* Tombol bulat */
-  font-size: 1rem;
-  line-height: 1; /* Paskan ikon x */
-  width: 28px; /* Ukuran tetap */
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0; /* Jangan menyusut */
-}
-
-.reading-list-item .remove-button:hover {
-  background-color: #D32F2F;
-}
-/* src/App.css (Tambahkan di bagian bawah) */
-
-/* --- 10. Style Detail Card --- */
-.detail-card-container h2 {
-  margin-top: 0;
-  color: var(--color-secondary); /* Warna ungu aksen */
-}
-
-.detail-card-container .detail-description {
-  margin-bottom: 20px;
-  font-size: 0.95rem;
-  line-height: 1.7;
-}
-
-.detail-card-container .detail-subjects-title {
-  color: var(--color-secondary);
-  margin-top: 0;
-  margin-bottom: 10px;
-  font-size: 1rem;
-}
-
-.detail-card-container .detail-subjects-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex; /* Kriteria CSS: Flexbox */
-  flex-wrap: wrap; /* Izinkan wrap jika banyak subjek */
-  gap: 8px; /* Jarak antar subjek */
-}
-
-.detail-card-container .detail-subjects-list li {
-  background-color: var(--color-primary);
-  color: white;
-  padding: 5px 10px;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  flex-shrink: 0; /* Jangan menyusut */
-}
-/* src/App.css (Tambahkan di bagian bawah) */
-
-/* --- 11. Style Filter Subjek --- */
-.subject-filter-container {
-  margin-bottom: 20px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #eee; /* Garis pemisah */
-}
-
-.subject-filter-container label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: bold;
-  color: var(--color-primary);
-  font-size: 0.95rem;
-}
-
-.subject-filter-container select {
-  width: auto; /* Agar select tidak full width */
-  min-width: 180px;
-  padding: 10px 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: white;
-  appearance: none; /* Hilangkan arrow default di beberapa browser */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23616161'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); /* Custom arrow */
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  background-size: 20px;
+.checkbox-group label {
+  font-weight: normal;
+  color: var(--text-secondary);
   cursor: pointer;
 }
 
-.subject-filter-container select:hover {
-  border-color: var(--color-primary);
+.input-group input[type="number"],
+.input-group select {
+  padding: 12px 15px;
+  font-size: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: #FFF; /* Pastikan select punya bg */
+}
+
+/* Kombinasi selector */
+.input-group input[type="number"]:focus,
+.input-group select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(178, 216, 216, 0.5);
+}
+
+/* === 5. Data Table (Grid) === */
+.results-grid {
+  display: grid; /* Menggunakan CSS Grid */
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 25px;
+}
+
+.book-card {
+  background-color: var(--bg-container);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex; /* Menggunakan Flexbox */
+  flex-direction: column;
+  border: 1px solid var(--border-color);
+}
+
+.book-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+.book-card-cover {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  background-color: #EEE;
+  cursor: pointer;
+}
+
+.book-card-info {
+  padding: 20px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.book-card-info h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0 0 5px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.book-card-info p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin: 0 0 15px 0;
+  flex-grow: 1;
+}
+
+.book-card-actions button {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  background-color: var(--button-color);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.book-card-actions button:hover {
+  background-color: var(--button-hover);
+}
+
+/* === 6. Detail Card (Modal) === */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-content {
+  background: var(--bg-container);
+  padding: 30px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+  width: 100%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  line-height: 1;
+}
+
+.modal-body {
+  display: flex;
+  gap: 25px;
+}
+
+.modal-cover {
+  width: 200px;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.modal-details h2 { margin-top: 0; }
+.modal-details p { color: var(--text-secondary); }
+.modal-details strong { color: var(--text-primary); }
+.modal-description {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+/* === 7. Loading, Error, Responsive === */
+.loading-message,
+.error-message,
+.no-results-message {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.error-message {
+  color: #D9534F;
+  font-weight: 600;
+}
+
+/* Media Queries untuk Responsive Design */
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .modal-body {
+    flex-direction: column;
+    align-items: center;
+  }
+  .modal-cover {
+    width: 100%;
+    max-width: 250px;
+    height: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .search-form {
+    flex-direction: column;
+  }
+  .results-grid {
+    grid-template-columns: 1fr;
+  }
+  .book-card-cover {
+    height: 400px;
+  }
 }

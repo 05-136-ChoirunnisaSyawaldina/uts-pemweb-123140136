@@ -1,58 +1,50 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
+// Impor semua komponen, termasuk yang baru
 import Header from './components/Header';
 import SearchForm from './components/SearchForm';
 import DataTable from './components/DataTable';
 import DetailCard from './components/DetailCard';
+import ReadingListSidebar from './components/ReadingListSidebar'; // Komponen baru
 
-// Komponen Fungsional
 function App() {
-  // useState
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
   const [searchParams, setSearchParams] = useState({
-    query: 'react programming',
+    query: 'harry potter', // Ganti default search
     subject: '',
-    publishYear: '',
+    publishYear: '1000', // Ganti default year
     hasCover: false,
     sortBy: 'relevance'
   });
   
   const [selectedBookKey, setSelectedBookKey] = useState(null);
+  
+  // --- STATE BARU UNTUK READING LIST ---
+  const [readingList, setReadingList] = useState([]);
+  const [isListOpen, setIsListOpen] = useState(false);
 
-  // useEffect
+  // Efek 1: Fetch buku berdasarkan pencarian
   useEffect(() => {
-    // Async Await
     const fetchBooks = async () => {
       setLoading(true);
       setError(null);
       setBooks([]);
       
       try {
-        // Template Literals
         let url = `https://openlibrary.org/search.json?q=${encodeURIComponent(searchParams.query)}`;
-        
-        if (searchParams.subject) {
-          url += `&subject=${encodeURIComponent(searchParams.subject)}`;
-        }
-        if (searchParams.publishYear) {
-          url += `&first_publish_year=${encodeURIComponent(searchParams.publishYear)}`;
-        }
-        if (searchParams.sortBy === 'new') {
-          url += `&sort=new`;
-        }
+        if (searchParams.subject) url += `&subject=${encodeURIComponent(searchParams.subject)}`;
+        if (searchParams.publishYear) url += `&first_publish_year=${encodeURIComponent(searchParams.publishYear)}`;
+        if (searchParams.sortBy === 'new') url += `&sort=new`;
         
         const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error('Gagal mengambil data dari Open Library API.');
-        }
+        if (!response.ok) throw new Error('Failed to fetch data from Open Library API.');
+        
         const data = await response.json();
         
-        // Data Transformation
-        // Array Methods (.map, .filter)
         let formattedBooks = data.docs.map(doc => ({
           key: doc.key,
           title: doc.title,
@@ -66,7 +58,6 @@ function App() {
         }
         
         setBooks(formattedBooks);
-
       } catch (err) {
         setError(err.message);
       } finally {
@@ -75,44 +66,58 @@ function App() {
     };
     
     fetchBooks();
-    
-  }, [searchParams]); // Dependency array
+  }, [searchParams]);
 
-  // Event Handling
+  // Efek 2: Muat reading list dari localStorage saat app dibuka
+  useEffect(() => {
+    try {
+      const storedList = JSON.parse(localStorage.getItem('readingList') || '[]');
+      setReadingList(storedList);
+    } catch (e) {
+      console.error("Failed to load reading list from localStorage", e);
+      setReadingList([]);
+    }
+  }, []); // <-- Dependency kosong, hanya jalan sekali
+
+  // --- FUNGSI BARU UNTUK LIST ---
+  
+  const handleAddToList = (bookToAdd) => {
+    // Cek duplikat di state
+    if (!readingList.find(item => item.key === bookToAdd.key)) {
+      const newList = [...readingList, bookToAdd];
+      setReadingList(newList);
+      localStorage.setItem('readingList', JSON.stringify(newList)); // Simpan ke localStorage
+    }
+  };
+
+  const handleRemoveFromList = (bookKeyToRemove) => {
+    const newList = readingList.filter(item => item.key !== bookKeyToRemove);
+    setReadingList(newList);
+    localStorage.setItem('readingList', JSON.stringify(newList)); // Simpan ke localStorage
+  };
+
+  const toggleListSidebar = () => {
+    setIsListOpen(!isListOpen);
+  };
+
+  // --- Handlers Lama ---
   const handleSearch = (newParams) => {
     setSearchParams(newParams);
   };
-
   const handleBookClick = (bookKey) => {
     setSelectedBookKey(bookKey);
   };
-
   const handleCloseModal = () => {
     setSelectedBookKey(null);
   };
 
-  // Logika localStorage
-  const handleAddToList = (book) => {
-    try {
-      const list = JSON.parse(localStorage.getItem('readingList') || '[]');
-      // Array Methods (.find)
-      if (!list.find(item => item.key === book.key)) {
-        list.push(book);
-        localStorage.setItem('readingList', JSON.stringify(list));
-        alert(`${book.title} berhasil ditambahkan ke Reading List!`);
-      } else {
-        alert(`${book.title} sudah ada di Reading List.`);
-      }
-    } catch (e) {
-      console.error("Gagal menyimpan ke localStorage", e);
-      alert("Gagal menyimpan ke Reading List.");
-    }
-  };
-
   return (
     <div className="container">
-      {/* Props Passing */}
-      <Header title="My Pastel Book Library" />
+      {/* Ganti title dan tambahkan prop onToggleList */}
+      <Header 
+        title="Book Library" 
+        onToggleList={toggleListSidebar}
+      />
       
       <SearchForm 
         onSearch={handleSearch} 
@@ -124,15 +129,29 @@ function App() {
         error={error}
         onBookClick={handleBookClick}
         onAddToList={handleAddToList}
+        readingList={readingList} // Kirim list untuk cek duplikat
       />
 
-      {/* Conditional Rendering */}
+      {/* Modal Detail (Fitur Wajib) */}
       {selectedBookKey && (
         <DetailCard 
           bookKey={selectedBookKey} 
           onClose={handleCloseModal} 
         />
       )}
+
+      {/* Sidebar Reading List (Fitur Wajib) */}
+      <ReadingListSidebar
+        isOpen={isListOpen}
+        listItems={readingList}
+        onRemove={handleRemoveFromList}
+        onClose={toggleListSidebar}
+      />
+      {/* === FOOTER BARU ANDA MULAI DI SINI === */}
+      <footer className="app-footer">
+        <p>© 2025 - Choirunnisa Syawaldina 123140136 | UTS PAW RA</p>
+      </footer>
+      {/* === FOOTER SELESAI === */}
     </div>
   );
 }

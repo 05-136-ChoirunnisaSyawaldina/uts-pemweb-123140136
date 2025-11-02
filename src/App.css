@@ -1,25 +1,34 @@
-/* === 1. Global & Setup (Pastel Palette) === */
+/* === 1. PALET BARU: Pink Cream Soft === */
 :root {
-  --bg-main: #FDF8F5;
+  --bg-main: #FFFBF7;          /* Cream lembut */
   --bg-container: #FFFFFF;
-  --text-primary: #4A4A4A;
-  --text-secondary: #9B9B9B;
-  --accent-color: #B2D8D8; /* Mint */
-  --accent-hover: #86B8B8;
-  --button-color: #FADCB9; /* Peach */
-  --button-hover: #F9C89B;
-  --border-color: #EEEEEE;
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.08);
-  --border-radius: 12px;
+  --text-primary: #5D4037;     /* Coklat tua lembut */
+  --text-secondary: #A1887F;   /* Coklat muda */
+  --accent-color: #FFCDD2;     /* Pink muda */
+  --accent-hover: #E5B8BC;     /* Pink lebih gelap */
+  --button-color: #F8BBD0;     /* Pink tombol */
+  --button-hover: #F4A5BF;
+  --warn-color: #f0a1a1;
+  --border-color: #F5F5F5;     /* Border sangat tipis */
+  
+  --shadow-sm: 0 2px 8px rgba(93, 64, 55, 0.05);
+  --shadow-md: 0 6px 20px rgba(93, 64, 55, 0.08);
+
+  /* === EFEK GLOW (CAHAYA) BARU === */
+  --shadow-glow-accent: 0 0 15px 3px rgba(255, 205, 210, 0.7);
+  --shadow-glow-button: 0 0 15px 3px rgba(248, 187, 208, 0.8);
+  --shadow-glow-input: 0 0 0 3px rgba(255, 205, 210, 0.5);
+
+  /* Font Quicksand (dari langkah sebelumnya) */
+  font-family: 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   background-color: var(--bg-main);
   color: var(--text-primary);
   line-height: 1.6;
+  font-weight: 500;
 }
 
 .container {
@@ -28,9 +37,11 @@ body {
   padding: 20px;
 }
 
-/* === 2. Header (components/Header.jsx) === */
+/* === 2. Header === */
 .app-header {
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 30px;
   padding: 20px 30px;
   background-color: var(--bg-container);
@@ -45,10 +56,31 @@ body {
   font-weight: 700;
 }
 
-/* === 3. Search Form (components/SearchForm.jsx) === */
+.my-list-button {
+  background-color: var(--accent-color);
+  color: var(--text-primary);
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.my-list-button:hover {
+  background-color: var(--accent-hover);
+  box-shadow: var(--shadow-sm), var(--shadow-glow-accent); /* Efek glow */
+  transform: translateY(-2px);
+}
+
+/* === 3. Search Form === */
 .search-container {
   background-color: var(--bg-container);
-  padding: 25px;
+  padding: 30px;
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-sm);
   margin-bottom: 30px;
@@ -63,41 +95,47 @@ body {
   flex-grow: 1;
   padding: 12px 15px;
   font-size: 1rem;
-  border: 1px solid var(--border-color);
+  border: 2px solid var(--border-color);
   border-radius: var(--border-radius);
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: all 0.3s ease;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 500;
+  background-color: var(--bg-main); /* Warna input cream */
 }
 
-/* Pseudo-class :focus */
 .search-form input[type="text"]:focus {
   outline: none;
+  background-color: #fff;
   border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px rgba(178, 216, 216, 0.5);
+  box-shadow: var(--shadow-glow-input); /* Efek glow */
 }
 
-.search-form button {
+.search-button {
   padding: 12px 20px;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-primary);
   background-color: var(--button-color);
   border: none;
   border-radius: var(--border-radius);
   cursor: pointer;
-  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
 }
 
-/* Pseudo-class :hover */
-.search-form button:hover {
+.search-button:hover {
   background-color: var(--button-hover);
+  box-shadow: var(--shadow-sm), var(--shadow-glow-button); /* Efek glow */
+  transform: translateY(-2px);
 }
 
-/* === 4. Form Grid (untuk 5 input) === */
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-top: 20px;
+  gap: 25px;
+  margin-top: 25px;
 }
 
 .input-group {
@@ -107,57 +145,53 @@ body {
 }
 
 .input-group label {
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-primary);
 }
 
-.radio-group {
+.radio-group, .checkbox-group {
   display: flex;
   gap: 15px;
   align-items: center;
   margin-top: 5px;
 }
 
-.radio-group label {
-  font-weight: normal;
-  color: var(--text-secondary);
-}
-
-.checkbox-group {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.checkbox-group label {
-  font-weight: normal;
+.radio-group label, .checkbox-group label {
+  font-weight: 500;
   color: var(--text-secondary);
   cursor: pointer;
+}
+
+/* Kustomisasi radio & checkbox jadi pink */
+input[type='radio'], input[type='checkbox'] {
+  accent-color: var(--button-color);
 }
 
 .input-group input[type="number"],
 .input-group select {
   padding: 12px 15px;
   font-size: 1rem;
-  border: 1px solid var(--border-color);
+  border: 2px solid var(--border-color);
   border-radius: var(--border-radius);
-  background-color: #FFF; /* Pastikan select punya bg */
+  background-color: var(--bg-main); /* Warna input cream */
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 500;
+  transition: all 0.3s ease;
 }
 
-/* Kombinasi selector */
 .input-group input[type="number"]:focus,
 .input-group select:focus {
   outline: none;
+  background-color: #fff;
   border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px rgba(178, 216, 216, 0.5);
+  box-shadow: var(--shadow-glow-input); /* Efek glow */
 }
 
 /* === 5. Data Table (Grid) === */
 .results-grid {
-  display: grid; /* Menggunakan CSS Grid */
+  display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 25px;
+  gap: 30px;
 }
 
 .book-card {
@@ -165,15 +199,15 @@ body {
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  display: flex; /* Menggunakan Flexbox */
+  transition: all 0.3s ease;
+  display: flex;
   flex-direction: column;
   border: 1px solid var(--border-color);
 }
 
 .book-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-md), var(--shadow-glow-accent); /* Efek glow */
 }
 
 .book-card-cover {
@@ -182,6 +216,7 @@ body {
   object-fit: cover;
   background-color: #EEE;
   cursor: pointer;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .book-card-info {
@@ -201,36 +236,46 @@ body {
 }
 
 .book-card-info p {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   color: var(--text-secondary);
   margin: 0 0 15px 0;
   flex-grow: 1;
 }
 
-.book-card-actions button {
+.book-card-actions .action-button {
   width: 100%;
   padding: 10px 12px;
   font-size: 0.9rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-primary);
   background-color: var(--button-color);
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
-.book-card-actions button:hover {
+.book-card-actions .action-button:hover {
   background-color: var(--button-hover);
+  box-shadow: var(--shadow-sm), var(--shadow-glow-button); /* Efek glow */
 }
 
-/* === 6. Detail Card (Modal) === */
+.book-card-actions .action-button:disabled {
+  background-color: var(--accent-color);
+  color: var(--text-primary);
+  cursor: not-allowed;
+  opacity: 0.8;
+  box-shadow: none;
+}
+
+/* === 6. Modal (Detail) === */
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
@@ -238,7 +283,6 @@ body {
   z-index: 1000;
   padding: 20px;
 }
-
 .modal-content {
   background: var(--bg-container);
   padding: 30px;
@@ -249,12 +293,11 @@ body {
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
+  border-top: 5px solid var(--accent-color); /* Aksen pink */
 }
-
 .modal-close-btn {
   position: absolute;
-  top: 15px;
-  right: 20px;
+  top: 15px; right: 20px;
   background: transparent;
   border: none;
   font-size: 2rem;
@@ -262,12 +305,7 @@ body {
   cursor: pointer;
   line-height: 1;
 }
-
-.modal-body {
-  display: flex;
-  gap: 25px;
-}
-
+.modal-body { display: flex; gap: 25px; }
 .modal-cover {
   width: 200px;
   height: 300px;
@@ -275,9 +313,8 @@ body {
   border-radius: 8px;
   flex-shrink: 0;
 }
-
 .modal-details h2 { margin-top: 0; }
-.modal-details p { color: var(--text-secondary); }
+.modal-details p { color: var(--text-secondary); margin-bottom: 15px; }
 .modal-details strong { color: var(--text-primary); }
 .modal-description {
   margin-top: 20px;
@@ -285,39 +322,178 @@ body {
   border-top: 1px solid var(--border-color);
 }
 
-/* === 7. Loading, Error, Responsive === */
+/* === 7. Loading/Error === */
 .loading-message,
 .error-message,
 .no-results-message {
   text-align: center;
   padding: 60px 20px;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
+  font-weight: 700;
   color: var(--text-secondary);
-  font-style: italic;
+}
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid var(--border-color);
+  border-top-color: var(--button-color); /* Ganti jadi pink */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 40px auto;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
-.error-message {
-  color: #D9534F;
-  font-weight: 600;
+/* === 8. READING LIST SIDEBAR (BESERTA BUG FIX) === */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  
+  /* --- BUG FIX DIMULAI --- */
+  opacity: 0;
+  visibility: hidden; /* Sembunyikan sepenuhnya */
+  pointer-events: none; /* Jangan biarkan diklik saat tersembunyi */
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  /* --- BUG FIX SELESAI --- */
 }
 
-/* Media Queries untuk Responsive Design */
+.sidebar-overlay.open {
+  /* --- BUG FIX DIMULAI --- */
+  opacity: 1;
+  visibility: visible; /* Tampilkan */
+  pointer-events: auto; /* Biarkan diklik */
+  /* --- BUG FIX SELESAI --- */
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: -400px;
+  width: 100%;
+  max-width: 400px;
+  height: 100vh;
+  background-color: var(--bg-main);
+  box-shadow: -5px 0 20px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+  transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar.open {
+  right: 0;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 30px;
+  background-color: var(--bg-container);
+  border-bottom: 3px solid var(--accent-color); /* Aksen pink */
+}
+
+.sidebar-header h2 { margin: 0; font-weight: 700; }
+.sidebar-close-btn {
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.sidebar-close-btn:hover {
+  transform: scale(1.1) rotate(90deg);
+}
+
+.sidebar-content {
+  padding: 20px;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+.empty-list-message {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  font-weight: 700;
+}
+
+.list-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background-color: var(--bg-container);
+  border-radius: var(--border-radius);
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+}
+.list-item:hover {
+  transform: scale(1.02);
+  box-shadow: var(--shadow-md);
+}
+
+.list-item-cover {
+  width: 60px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+.list-item-info { flex-grow: 1; overflow: hidden; }
+.list-item-info h4 {
+  margin: 0 0 5px 0;
+  font-size: 1rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.list-item-info p { margin: 0; font-size: 0.9rem; }
+.list-item-remove-btn {
+  background-color: var(--warn-color);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  flex-shrink: 0;
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+.list-item-remove-btn:hover {
+  background-color: #c0392b;
+  transform: scale(1.1);
+}
+
+/* === 9. Responsive === */
 @media (max-width: 768px) {
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
   .modal-body {
     flex-direction: column;
     align-items: center;
   }
-  .modal-cover {
-    width: 100%;
-    max-width: 250px;
-    height: auto;
+  .form-grid {
+    grid-template-columns: 1fr;
   }
 }
-
 @media (max-width: 480px) {
+  .app-header {
+    flex-direction: column;
+    gap: 15px;
+  }
   .search-form {
     flex-direction: column;
   }
@@ -327,4 +503,14 @@ body {
   .book-card-cover {
     height: 400px;
   }
+}
+/* === 10. Footer (BARU) === */
+.app-footer {
+  text-align: center;
+  padding: 30px 20px;
+  margin-top: 40px; /* Memberi jarak dari konten di atasnya */
+  color: var(--text-secondary); /* Menggunakan warna teks sekunder dari tema */
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-top: 2px solid var(--border-color); /* Garis tipis pemisah */
 }

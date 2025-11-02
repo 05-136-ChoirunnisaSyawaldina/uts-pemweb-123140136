@@ -1,48 +1,61 @@
 import React from 'react';
+import { IoAdd, IoCheckmark } from 'react-icons/io5'; // Ikon baru
 
-// Ini adalah komponen 'DataTable' Anda, dirender sebagai Grid
-const DataTable = ({ books, loading, error, onBookClick, onAddToList }) => {
+// Menerima prop 'readingList' untuk mengecek duplikat
+const DataTable = ({ books, loading, error, onBookClick, onAddToList, readingList }) => {
 
-  // 1. Loading State
   if (loading) {
-    return <div className="loading-message">Memuat buku... 📚</div>;
+    // Spinner 'imut' baru
+    return <div className="loading-spinner"></div>;
   }
 
-  // 2. Error Handling
   if (error) {
-    return <div className="error-message">Terjadi Kesalahan: {error}</div>;
+    return <div className="error-message">Error: {error}</div>;
   }
 
-  // 3. No Results
   if (books.length === 0) {
-    return <div className="no-results-message">Tidak ada buku yang ditemukan. Coba kata kunci lain.</div>;
+    return <div className="no-results-message">No books found. Try another search.</div>;
   }
 
-  // 4. Tampilkan Grid (Data Dinamis)
   return (
     <div className="results-grid">
-      {books.map(book => (
-        <div key={book.key} className="book-card">
-          <img
-            src={book.coverId ? `https://covers.openlibrary.org/b/id/${book.coverId}-M.jpg` : 'https://via.placeholder.com/240x320.png?text=No+Cover'}
-            alt={`Cover ${book.title}`} // Accessibility
-            className="book-card-cover"
-            onClick={() => onBookClick(book.key)}
-          />
-          <div className="book-card-info">
-            {/* "Kolom" data */}
-            <h3 title={book.title}>{book.title}</h3>
-            <p>Penulis: {book.author}</p>
-            <p>Tahun: {book.year || 'N/A'}</p>
-            <div className="book-card-actions">
-              {/* Event Handling */}
-              <button onClick={() => onAddToList(book)}>
-                + Tambah ke Reading List
-              </button>
+      {books.map(book => {
+        // Cek apakah buku sudah ada di list
+        const isAdded = readingList.some(item => item.key === book.key);
+        
+        return (
+          <div key={book.key} className="book-card">
+            <img
+              src={book.coverId ? `https://covers.openlibrary.org/b/id/${book.coverId}-M.jpg` : 'https://via.placeholder.com/240x320.png?text=No+Cover'}
+              alt={`Cover ${book.title}`}
+              className="book-card-cover"
+              onClick={() => onBookClick(book.key)}
+            />
+            <div className="book-card-info">
+              <h3 title={book.title}>{book.title}</h3>
+              <p>By: {book.author}</p>
+              <p>Year: {book.year || 'N/A'}</p>
+              <div className="book-card-actions">
+                <button 
+                  className="action-button"
+                  onClick={() => onAddToList(book)}
+                  disabled={isAdded} // Nonaktifkan tombol jika sudah ditambah
+                >
+                  {isAdded ? (
+                    <>
+                      <IoCheckmark /> Added
+                    </>
+                  ) : (
+                    <>
+                      <IoAdd /> Add to List
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };

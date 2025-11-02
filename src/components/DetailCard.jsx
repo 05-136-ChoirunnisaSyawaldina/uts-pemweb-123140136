@@ -4,22 +4,19 @@ const DetailCard = ({ bookKey, onClose }) => {
   const [details, setDetails] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // useEffect untuk fetch detail buku
   useEffect(() => {
     if (!bookKey) return;
 
     setLoading(true);
-    // Async Await
     const fetchBookDetails = async () => {
       try {
-        // Template Literals
         const response = await fetch(`https://openlibrary.org${bookKey}.json`);
         if (!response.ok) {
-          throw new Error('Gagal mengambil detail buku.');
+          throw new Error('Failed to fetch book details.');
         }
         const data = await response.json();
         
-        let description = "Tidak ada deskripsi.";
+        let description = "No description available.";
         if (typeof data.description === 'string') {
           description = data.description;
         } else if (data.description && typeof data.description.value === 'string') {
@@ -41,7 +38,7 @@ const DetailCard = ({ bookKey, onClose }) => {
     };
 
     fetchBookDetails();
-  }, [bookKey]); // Dependency array
+  }, [bookKey]);
 
   const coverUrl = details?.coverId
     ? `https://covers.openlibrary.org/b/id/${details.coverId}-L.jpg`
@@ -52,17 +49,17 @@ const DetailCard = ({ bookKey, onClose }) => {
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close-btn" onClick={onClose}>&times;</button>
         
-        {loading && <div className="loading-message">Memuat detail...</div>}
+        {loading && <div className="loading-spinner"></div>}
 
         {!loading && details && (
           <div className="modal-body">
             <img src={coverUrl} alt={`Cover ${details.title}`} className="modal-cover" />
             <div className="modal-details">
               <h2>{details.title}</h2>
-              <p><strong>Subjek:</strong> {details.subjects}</p>
+              <p><strong>Subjects:</strong> {details.subjects}</p>
               
               <div className="modal-description">
-                <strong>Deskripsi:</strong>
+                <strong>Description:</strong>
                 <p>{details.description.substring(0, 500)}{details.description.length > 500 ? '...' : ''}</p>
               </div>
             </div>

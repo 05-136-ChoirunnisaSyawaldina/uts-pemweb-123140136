@@ -1,13 +1,12 @@
-// src/components/Header.jsx
 import React from 'react';
 
-function Header() {
+// Komponen fungsional sederhana
+const Header = ({ title }) => {
   return (
     <header className="app-header">
-      <h1>My Book Library</h1>
-      <p>Temukan, Simpan, dan Baca</p>
+      <h1>{title}</h1>
     </header>
   );
-}
+};
 
 export default Header;

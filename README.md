@@ -22,7 +22,6 @@ Screenshot aplikasi yang menunjukkan fungsionalitas dan desain responsif.
 
 ### Tampilan Desktop (Pencarian & Hasil)
 <br><img width="1895" height="1080" alt="Screenshot 2025-11-02 120823" src="https://github.com/user-attachments/assets/dbb2d1ca-9a22-4439-9a41-86fd048efd2a" />
-<br><img width="1920" height="1200" alt="Screenshot 2025-11-02 120557" src="https://github.com/user-attachments/assets/847d1e48-fc5e-4bfd-89e1-b847061b71cb" />
 
 ### Tampilan Modal Detail Buku
 <br><img width="1886" height="1063" alt="Screenshot 2025-11-02 120705" src="https://github.com/user-attachments/assets/365db780-fbf8-4586-b1b6-d7a0852cd540" />
